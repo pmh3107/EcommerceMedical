@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import app.ecommercemedical.ui.MyApp
+import app.ecommercemedical.ui.screens.auth.LoginScreen
 import app.ecommercemedical.ui.theme.ECommerceMedicalTheme
 
 class App : ComponentActivity() {
@@ -13,7 +14,8 @@ class App : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ECommerceMedicalTheme {
-                MyApp()
+//                MyApp()
+                LoginScreen(inLoginSuccess = { })
             }
         }
     }
