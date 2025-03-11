@@ -1,4 +1,4 @@
-package app.ecommercemedical.ui.screens.auth
+package app.ecommercemedical.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,15 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
-fun Profile() {
+fun Home() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                "Welcome to Profile Screen",
+                "Welcome to my App",
                 modifier = Modifier.padding(bottom = 24.dp),
                 fontSize = 30.sp,
                 color = Color.Gray

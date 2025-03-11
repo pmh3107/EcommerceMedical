@@ -14,8 +14,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,18 +31,16 @@ import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.fragment.NavHostFragment
+import app.ecommercemedical.R
+import app.ecommercemedical.navigation.AppBottomNavBar
+import app.ecommercemedical.navigation.AppNavHost
+import app.ecommercemedical.navigation.LogIn
+import app.ecommercemedical.ui.screens.auth.LoginScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-
-
-class HandleView : ViewModel() {
-    private var _isNavigation = MutableStateFlow(false)
-    val isNavigation: StateFlow<Boolean> = _isNavigation
-    fun handleNavigation() {
-        _isNavigation.value = !_isNavigation.value
-    }
-}
 
 @Composable
 fun Greetings(names: List<String> = List(1000) { "Name - $it" }) {
@@ -105,31 +103,25 @@ fun Greeting(name: String) {
 }
 
 @Composable
-fun OnBoardShow(onClickNavigate: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                "Welcome to my App",
-                modifier = Modifier.padding(bottom = 24.dp),
-                fontSize = 30.sp,
-                color = Color.Gray
-            )
-            FilledTonalButton(onClick = onClickNavigate) {
-                Text("Continue")
+fun MyApp() {
+    val navController = rememberNavController()
+    val currentRoute =
+        navController.currentBackStackEntryAsState().value?.destination?.route ?: LogIn.route
+    val showBottomBar = currentRoute != LogIn.route
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                AppBottomNavBar(
+                    navHostController = navController,
+                    bottomBarState = remember { mutableStateOf(true) }
+                )
             }
         }
+    ) { innerPadding ->
+        AppNavHost(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
-@Composable
-fun MyApp(viewModel: HandleView = HandleView()) {
-    val isNavigation by viewModel.isNavigation.collectAsState()
-    if (isNavigation) {
-        Greetings()
-    } else {
-        OnBoardShow(onClickNavigate = { viewModel.handleNavigation() })
-    }
-}
