@@ -14,9 +14,9 @@ class App : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ECommerceMedicalTheme {
-//                MyApp()
-                LoginScreen(inLoginSuccess = { })
+                MyApp()
             }
+
         }
     }
 }
