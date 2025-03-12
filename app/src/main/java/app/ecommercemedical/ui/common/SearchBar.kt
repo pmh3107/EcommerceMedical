@@ -36,20 +36,6 @@ fun SearchingBar(modifier: Modifier = Modifier) {
         .fillMaxWidth()
         .padding(horizontal = 4.dp)
         .semantics { isTraversalGroup = false }) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                "Home", modifier = Modifier,
-                fontWeight = FontWeight(700),
-                style = MaterialTheme.typography.titleLarge
-            )
-            BadgeButton()
-        }
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -78,6 +64,7 @@ fun SearchingBar(modifier: Modifier = Modifier) {
                 }
             }
         ) {
+            //Handle late
         }
     }
 }

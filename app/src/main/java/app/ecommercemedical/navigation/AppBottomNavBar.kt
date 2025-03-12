@@ -24,7 +24,10 @@ fun AppBottomNavBar(
         ButtonNavbarItem.profile
     )
 
-    BottomNavigation(modifier = Modifier.height(80.dp), backgroundColor = Color.LightGray) {
+    BottomNavigation(
+        modifier = Modifier.height(60.dp),
+        backgroundColor = Color.White
+    ) {
         val currentRoute =
             navHostController.currentBackStackEntryAsState().value?.destination?.route
         items.forEach { item ->

@@ -28,37 +28,37 @@ val listProduct = listOf(
     ProductCard(
         id = "1",
         name = "Product 1",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/237/200/300",
         desc = "Product description 1"
     ),
     ProductCard(
         id = "2",
         name = "Product 2",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/234/200/300",
         desc = "Product description 2"
     ),
     ProductCard(
         id = "3",
         name = "Product 3",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/233/200/300",
         desc = "Product description 3"
     ),
     ProductCard(
         id = "3",
         name = "Product 3",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/232/200/300",
         desc = "Product description 3"
     ),
     ProductCard(
         id = "3",
         name = "Product 3",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/231/200/300",
         desc = "Product description 3"
     ),
     ProductCard(
         id = "3",
         name = "Product 3",
-        imageUrl = "",
+        imageUrl = "https://picsum.photos/id/230/200/300",
         desc = "Product description 3"
     ),
 )
