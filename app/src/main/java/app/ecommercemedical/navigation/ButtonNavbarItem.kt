@@ -1,6 +1,9 @@
 package app.ecommercemedical.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,7 +21,13 @@ sealed class ButtonNavbarItem(
 
     data object profile : ButtonNavbarItem(
         title = "Profile",
-        icon = Icons.Rounded.AccountCircle,
+        icon = Icons.Rounded.AccountBox,
         route = app.ecommercemedical.navigation.Profile.route
+    )
+
+    data object product : ButtonNavbarItem(
+        title = "Product",
+        icon = Icons.Default.CheckCircle,
+        route = app.ecommercemedical.navigation.Product.route
     )
 }

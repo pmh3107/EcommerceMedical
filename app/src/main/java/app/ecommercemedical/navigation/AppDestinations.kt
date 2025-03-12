@@ -15,4 +15,8 @@ object Profile: AppDestinations {
 object LogIn: AppDestinations {
     override val route = "login"
 }
+object Product: AppDestinations {
+    override val route = "product"
+}
+
 

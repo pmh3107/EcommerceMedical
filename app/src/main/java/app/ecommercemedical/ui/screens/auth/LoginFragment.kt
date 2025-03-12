@@ -1,7 +1,7 @@
 package app.ecommercemedical.ui.screens.auth
 
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedButton
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,30 +33,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-
-class LoginFragment {
-
-}
+import app.ecommercemedical.R
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var userName by remember { mutableStateOf("") }
     var passWord by remember { mutableStateOf("") }
-    val context = LocalContext.current.applicationContext
+//    val context = LocalContext.current.applicationContext
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -64,10 +59,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 style = MaterialTheme.typography.displayLarge,
                 fontWeight = FontWeight(700)
             )
-//            Spacer(modifier = Modifier.height(48.dp))
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(14.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -129,9 +122,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-
-
-
+                Text("- or continue with - ", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(24.dp))
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
@@ -141,12 +133,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                         modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(imageVector = Icons.Default.AccountBox, contentDescription = null)
+                        Image(
+                            modifier = Modifier.height(20.dp),
+                            painter = painterResource(
+                                R.drawable.google_icon
+                            ), contentDescription = null
+                        )
                         Spacer(modifier = Modifier.width(14.dp))
                         Text(
                             "Sign In With Google",
                             modifier = Modifier.padding(vertical = 8.dp),
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
@@ -154,3 +151,5 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         }
     }
 }
+
+

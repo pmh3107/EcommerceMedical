@@ -42,6 +42,9 @@ android {
 }
 
 dependencies {
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     implementation(libs.firebase.firestore)
     val nav_version = "2.8.8"
 
