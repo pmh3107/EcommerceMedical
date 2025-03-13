@@ -7,24 +7,41 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.ecommercemedical.ui.screens.auth.LoginScreen
 import app.ecommercemedical.ui.screens.auth.Profile
+import app.ecommercemedical.ui.screens.auth.RegisterScreen
 import app.ecommercemedical.ui.screens.home.Home
+import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.ui.screens.product.Product
+import app.ecommercemedical.ui.screens.product.ProductDetailFragment
+import app.ecommercemedical.viewmodel.AuthViewModel
 
 //@Composable
 @Composable
-fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController) {
-    NavHost(navController = navController, startDestination = LogIn.route) {
+fun AppNavHost(
+    modifier: Modifier,
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
+    NavHost(modifier = modifier, navController = navController, startDestination = Loading.route) {
+        composable(Loading.route) {
+            LoadingScreen(modifier, navController, authViewModel)
+        }
         composable(LogIn.route) {
-            LoginScreen(onLoginSuccess = { navController.navigate(Home.route) })
+            LoginScreen(modifier, navController, authViewModel)
+        }
+        composable(SignUp.route) {
+            RegisterScreen(modifier, navController, authViewModel)
         }
         composable(Home.route) {
-            Home()
+            Home(modifier, navController, authViewModel)
         }
         composable(Profile.route) {
-            Profile()
+            Profile(modifier, navController, authViewModel)
         }
         composable(Product.route) {
             Product()
+        }
+        composable(ProductDetail.route) {
+            ProductDetailFragment(modifier, navController, authViewModel)
         }
     }
 }

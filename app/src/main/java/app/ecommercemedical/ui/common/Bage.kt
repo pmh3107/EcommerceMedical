@@ -1,6 +1,7 @@
 package app.ecommercemedical.ui.common
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
@@ -22,7 +23,9 @@ fun BadgeButton() {
     var itemCount by remember { mutableStateOf(2) }
 
     BadgedBox(
-        modifier = Modifier.height(35.dp),
+        modifier = Modifier
+            .height(35.dp)
+            .padding(horizontal = 14.dp),
         badge = {
 //            if (itemCount > 0) {
             Badge(

@@ -1,6 +1,10 @@
 package app.ecommercemedical.ui.screens.auth
 
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedButton
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -27,25 +29,50 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import app.ecommercemedical.R
+import app.ecommercemedical.navigation.Home
+import app.ecommercemedical.navigation.SignUp
+import app.ecommercemedical.viewmodel.AuthState
+import app.ecommercemedical.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
-    var userName by remember { mutableStateOf("") }
-    var passWord by remember { mutableStateOf("") }
-//    val context = LocalContext.current.applicationContext
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current.applicationContext
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
+            ).show()
+
+            else -> Unit
+        }
+    }
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -66,8 +93,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = userName,
-                    onValueChange = { userName = it },
+                    value = email,
+                    onValueChange = { email = it },
                     modifier = Modifier.fillMaxWidth(),
                     leadingIcon = {
                         Icon(
@@ -88,8 +115,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
-                    value = passWord,
-                    onValueChange = { passWord = it },
+                    value = password,
+                    onValueChange = { password = it },
                     modifier = Modifier.fillMaxWidth(),
                     leadingIcon = {
                         Icon(
@@ -114,9 +141,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
-                    onClick = { onLoginSuccess() }) {
+                    onClick = { authViewModel.login(email, password) }) {
                     Text(
-                        "Đăng nhập",
+                        "Login",
                         modifier = Modifier.padding(vertical = 8.dp),
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -127,7 +154,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
-                    onClick = { onLoginSuccess() },
+                    onClick = { navController.navigate(Home.route) },
                 ) {
                     Row(
                         modifier = Modifier,
@@ -146,6 +173,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                TextButton(
+                    modifier = Modifier,
+                    onClick = { navController.navigate(SignUp.route) }) {
+                    Text(
+                        "Don't have account ? Sign Up",
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }

@@ -1,8 +1,8 @@
 plugins {
+    kotlin("plugin.serialization") version "2.0.21"
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
     alias(libs.plugins.google.gms.google.services)
 }
 
@@ -42,28 +42,19 @@ android {
 }
 
 dependencies {
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
+    implementation(libs.dotsindicator.v510)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.material)
+    implementation(libs.coil.compose)
     implementation(libs.firebase.firestore)
-    val nav_version = "2.8.8"
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
 
-    // Jetpack Compose integration
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-
-    // Views/Fragments integration
-    implementation("androidx.navigation:navigation-fragment:$nav_version")
-    implementation("androidx.navigation:navigation-ui:$nav_version")
-
-    // Feature module support for Fragments
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-
-    // Testing Navigation
-    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
-
-    // JSON serialization library, works with the Kotlin serialization plugin
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("androidx.compose.material:material:1.7.5")
+    androidTestImplementation(libs.androidx.navigation.testing)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

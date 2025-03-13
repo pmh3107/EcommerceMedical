@@ -19,56 +19,38 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import app.ecommercemedical.R
+import app.ecommercemedical.navigation.ProductDetail
+import app.ecommercemedical.ui.common.HorizontalPagerCustom
+import app.ecommercemedical.ui.dataUI.ProductCard
+import app.ecommercemedical.ui.dataUI.listProduct
 import coil.compose.AsyncImage
 
-data class ProductCard(val id: String, val name: String, val imageUrl: String, val desc: String)
-
-val listProduct = listOf(
-    ProductCard(
-        id = "1",
-        name = "Product 1",
-        imageUrl = "https://picsum.photos/id/237/200/300",
-        desc = "Product description 1"
-    ),
-    ProductCard(
-        id = "2",
-        name = "Product 2",
-        imageUrl = "https://picsum.photos/id/234/200/300",
-        desc = "Product description 2"
-    ),
-    ProductCard(
-        id = "3",
-        name = "Product 3",
-        imageUrl = "https://picsum.photos/id/233/200/300",
-        desc = "Product description 3"
-    ),
-    ProductCard(
-        id = "3",
-        name = "Product 3",
-        imageUrl = "https://picsum.photos/id/232/200/300",
-        desc = "Product description 3"
-    ),
-    ProductCard(
-        id = "3",
-        name = "Product 3",
-        imageUrl = "https://picsum.photos/id/231/200/300",
-        desc = "Product description 3"
-    ),
-    ProductCard(
-        id = "3",
-        name = "Product 3",
-        imageUrl = "https://picsum.photos/id/230/200/300",
-        desc = "Product description 3"
-    ),
+val imagesBanner = listOf(
+    "https://picsum.photos/seed/1/300/400",
+    "https://picsum.photos/seed/2/300/400",
+    "https://picsum.photos/seed/3/300/400",
+    "https://picsum.photos/seed/4/300/400",
+    "https://picsum.photos/seed/5/300/400"
 )
 
 @Composable
-fun ViewListCard(modifier: Modifier = Modifier) {
+fun ViewListCard(modifier: Modifier = Modifier, navController: NavController) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         item {
-            Banner()
+            HorizontalPagerCustom(imagesBanner)
             Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Category",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            CategorySection()
             Text(
                 "List Product",
                 modifier = Modifier
@@ -84,7 +66,8 @@ fun ViewListCard(modifier: Modifier = Modifier) {
                 for (item in rowItems) {
                     ProductCard(
                         product = item,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        navController = navController
                     )
                 }
                 if (rowItems.size < 2) {
@@ -117,11 +100,12 @@ fun Banner() {
 }
 
 @Composable
-fun ProductCard(modifier: Modifier = Modifier, product: ProductCard) {
+fun ProductCard(modifier: Modifier = Modifier, product: ProductCard, navController: NavController) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        onClick = { navController.navigate(ProductDetail.route) }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             AsyncImage(
@@ -130,7 +114,7 @@ fun ProductCard(modifier: Modifier = Modifier, product: ProductCard) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp),
-                error = painterResource(R.drawable.example_img),
+                error = painterResource(R.drawable.img_not_found),
                 onError = { error ->
                     android.util.Log.e(
                         "ImageError",

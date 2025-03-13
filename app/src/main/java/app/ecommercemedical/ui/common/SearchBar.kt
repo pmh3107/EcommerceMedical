@@ -2,6 +2,7 @@ package app.ecommercemedical.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,22 +26,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchingBar(modifier: Modifier = Modifier) {
+fun SearchingBar() {
     var querySearch by remember { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
     Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 4.dp)
         .semantics { isTraversalGroup = false }) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    "Hello", modifier = Modifier,
+                    fontWeight = FontWeight(500),
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    "John", modifier = Modifier,
+                    fontWeight = FontWeight(700),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            BadgeButton()
+        }
         SearchBar(
             modifier = Modifier
+                .padding(
+                    horizontal = 14.dp
+                )
                 .align(Alignment.TopCenter)
-                .semantics { var traversalIndex = 1f },
+                .semantics { traversalIndex = 0f },
             shape = MaterialTheme.shapes.medium,
             query = querySearch,
             onQueryChange = { querySearch = it },
