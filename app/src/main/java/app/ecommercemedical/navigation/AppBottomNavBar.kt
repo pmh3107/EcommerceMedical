@@ -25,7 +25,7 @@ fun AppBottomNavBar(
     )
 
     BottomNavigation(
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(80.dp),
         backgroundColor = Color.White
     ) {
         val currentRoute =

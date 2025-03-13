@@ -40,11 +40,11 @@ fun Product() {
         ) {
             Text(
                 "This is product list",
-                modifier = Modifier.padding(bottom = 24.dp),
+                modifier = Modifier.padding(bottom = 14.dp),
                 fontSize = 30.sp,
                 color = Color.Gray
             )
-            Spacer(modifier = Modifier.height(24.dp))
+//            Spacer(modifier = Modifier.height(24.dp))
             Greetings()
         }
     }
