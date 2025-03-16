@@ -28,6 +28,12 @@ object Loading : AppDestinations {
     override val route = "loading"
 }
 
+object Flash : AppDestinations {
+    override val route = "flash"
+}
+
 object ProductDetail : AppDestinations {
     override val route = "product-detail"
 }
+
+
