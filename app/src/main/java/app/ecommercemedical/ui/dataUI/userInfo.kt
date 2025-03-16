@@ -1,12 +1,6 @@
 package app.ecommercemedical.ui.dataUI
 
-data class UserInfo(
-    val id: String,
-    val imageUrl: String,
-    val firstName: String,
-    val lastName: String,
-    val address: String
-)
+import app.ecommercemedical.data.model.UserInfo
 
 val dummyData = UserInfo(
     id = "@123",

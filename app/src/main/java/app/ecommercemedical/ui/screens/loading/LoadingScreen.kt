@@ -19,17 +19,18 @@ import app.ecommercemedical.viewmodel.AuthViewModel
 @Composable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    authViewModel: AuthViewModel
+//    navController: NavController,
+//    authViewModel: AuthViewModel
 ) {
-    val authState by authViewModel.authState.observeAsState()
-    LaunchedEffect(authState) {
-        when (authState) {
-            is AuthState.Authenticated -> navController.navigate(Home.route)
-            is AuthState.Unauthenticated -> navController.navigate(LogIn.route)
-            else -> Unit
-        }
-    }
+//    val authState by authViewModel.authState.observeAsState()
+//    LaunchedEffect(authState) {
+//        when (authState) {
+//            is AuthState.Authenticated -> navController.navigate(Home.route)
+//            is AuthState.Unauthenticated -> navController.navigate(LogIn.route)
+//            else -> Unit
+//        }
+//    }
+    // fetch data and navigate to home
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),

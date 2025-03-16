@@ -20,6 +20,7 @@ import androidx.compose.material.OutlinedButton
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -53,6 +54,8 @@ fun RegisterScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
+    var firstname by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordCheck by remember { mutableStateOf("") }
@@ -83,12 +86,54 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
+                    value = firstname,
+                    onValueChange = { firstname = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null
+                        )
+                    },
+                    label = { Text("First name") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            // Handle next action
+                        },
+                    ),
+                )
+                OutlinedTextField(
+                    value = lastname,
+                    onValueChange = { lastname = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null
+                        )
+                    },
+                    label = { Text("Last name") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            // Handle next action
+                        },
+                    ),
+                )
+                OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     modifier = Modifier.fillMaxWidth(),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Person,
+                            imageVector = Icons.Default.Email,
                             contentDescription = null
                         )
                     },
@@ -155,7 +200,7 @@ fun RegisterScreen(
                     shape = MaterialTheme.shapes.medium,
                     onClick = {
                         if (password == passwordCheck) {
-                            authViewModel.signup(email, password)
+                            authViewModel.signup(email, password, firstname, lastname)
                             navController.navigate(app.ecommercemedical.navigation.LogIn.route)
                         } else {
                             Toast.makeText(context, "Password does not match!", Toast.LENGTH_SHORT)

@@ -1,5 +1,6 @@
 package app.ecommercemedical.ui.screens.home
 
+import SearchingBar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,23 +13,37 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.ecommercemedical.ui.common.SearchingBar
-import app.ecommercemedical.ui.dataUI.sampleCategories
+import app.ecommercemedical.R
+import app.ecommercemedical.ui.dataUI.CategoryItem
 import app.ecommercemedical.viewmodel.AuthViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
+val sampleCategories: List<CategoryItem> = listOf(
+    CategoryItem(1, "Fresh plant", "https://loremflickr.com/320/240/electronics"),
+    CategoryItem(2, "Tea", "https://loremflickr.com/320/240/fashion"),
+    CategoryItem(3, "Medicinal wine", "https://loremflickr.com/320/240/home"),
+    CategoryItem(4, "Tea bags", "https://loremflickr.com/320/240/beauty"),
+)
 
 @Composable
 fun Home(modifier: Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -43,20 +58,13 @@ fun Home(modifier: Modifier, navController: NavController, authViewModel: AuthVi
     }
 }
 
-// Data model cho danh mục sản phẩm
-data class CategoryItem(
-    val id: Int,
-    val name: String,
-    val iconRes: Int
-)
 
-
-// Composable hiển thị từng mục danh mục
 @Composable
 fun CategoryItemView(
-    category: app.ecommercemedical.ui.dataUI.CategoryItem,
+    category: CategoryItem,
     onClick: () -> Unit
 ) {
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -72,7 +80,8 @@ fun CategoryItemView(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(80.dp)
-                .clip(RoundedCornerShape(40.dp))
+                .clip(RoundedCornerShape(40.dp)),
+            placeholder = painterResource(R.drawable.img_not_found)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -85,15 +94,33 @@ fun CategoryItemView(
 
 @Composable
 fun CategorySection(
-    categories: List<app.ecommercemedical.ui.dataUI.CategoryItem> = sampleCategories,
+    categories: List<CategoryItem> = sampleCategories,
     onCategoryClick: (CategoryItem) -> Unit = {}
 ) {
+//    var categories by remember { mutableStateOf<List<CategoryItem>?>(null) }
+//    val db = Firebase.firestore
+//
+//    db.collection("categories").document("category_list")
+//        .get()
+//        .addOnSuccessListener { document ->
+//            if (document != null) {
+//                val categoriesData = document.get("categories") as? List<CategoryItem>
+//                categories = categoriesData
+//                println("Danh sách Category: $categories")
+//            } else {
+//                println("Không tìm thấy document")
+//            }
+//        }
+//        .addOnFailureListener { e ->
+//            println("Lỗi khi lấy dữ liệu: $e")
+//        }
+
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(categories) { category ->
+        items(categories ?: emptyList()) { category ->
             CategoryItemView(category = category, onClick = { })
         }
     }
