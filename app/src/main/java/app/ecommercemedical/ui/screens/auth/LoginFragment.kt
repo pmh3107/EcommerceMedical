@@ -1,9 +1,6 @@
 package app.ecommercemedical.ui.screens.auth
 
 
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,9 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedButton
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -28,7 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,10 +45,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.ecommercemedical.R
-import app.ecommercemedical.navigation.Flash
 import app.ecommercemedical.navigation.Home
+import app.ecommercemedical.navigation.LogIn
 import app.ecommercemedical.navigation.SignUp
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
+import app.ecommercemedical.viewmodel.AuthState
 import app.ecommercemedical.viewmodel.AuthViewModel
 
 @Composable
@@ -54,10 +58,17 @@ fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    var isLoading by remember { mutableStateOf(false) }
+    val isLoading by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
+    val authState by authViewModel.authState.observeAsState()
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Authenticated -> navController.navigate(Home.route)
+            is AuthState.Unauthenticated -> navController.navigate(LogIn.route)
+            else -> Unit
+        }
+    }
     Surface(modifier = Modifier.fillMaxSize()) {
         if (isLoading) {
             LoadingScreen()
@@ -130,10 +141,7 @@ fun LoginScreen(
                             .fillMaxWidth(),
                         shape = MaterialTheme.shapes.medium,
                         onClick = {
-                            isLoading = true
                             authViewModel.login(email, password)
-                            isLoading = false
-                            navController.navigate(Flash.route)
                         }) {
                         Text(
                             "Login",
@@ -183,5 +191,7 @@ fun LoginScreen(
         }
     }
 }
+
+
 
 

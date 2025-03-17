@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepository {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    
+
     fun fetchUserInfo(
         uid: String,
         onSuccess: (UserInfo?) -> Unit,
@@ -35,6 +35,27 @@ class UserRepository {
             }
             .addOnFailureListener { exception ->
                 onError(exception)
+            }
+    }
+
+
+    fun updateUserInfo(
+        uid: String,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit,
+        updatedProfile: UserInfo,
+    ) {
+        if (uid.isEmpty()) {
+            onError(Exception("UID is empty"))
+            return
+        }
+        val userDocRef = firestore.collection("users").document(uid)
+        userDocRef.set(updatedProfile)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { error ->
+                onError(error)
             }
     }
 }
