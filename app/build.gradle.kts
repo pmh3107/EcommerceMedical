@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.maps.compose)
     implementation(libs.dotsindicator.v510)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.material)

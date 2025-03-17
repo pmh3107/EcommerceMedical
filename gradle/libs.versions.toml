@@ -15,6 +15,7 @@ composeBom = "2024.04.01"
 googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.2"
 firebaseAuth = "23.2.0"
+mapsCompose = "6.4.1"
 material = "1.7.8"
 navigationCompose = "2.8.8"
 runtimeLivedata = "1.7.8"
@@ -47,6 +48,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

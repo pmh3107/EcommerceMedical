@@ -32,8 +32,12 @@ object Flash : AppDestinations {
     override val route = "flash"
 }
 
+object About : AppDestinations {
+    override val route = "about"
+}
+
 object ProductDetail : AppDestinations {
-    override val route = "product-detail"
+    override val route = "product_detail/{productId}"
 }
 
 

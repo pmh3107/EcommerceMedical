@@ -1,5 +1,6 @@
 package app.ecommercemedical.ui.screens.product
 
+import ProductItem
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,29 +19,40 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import app.ecommercemedical.data.model.UserInfo
 import app.ecommercemedical.ui.common.BadgeButton
 import app.ecommercemedical.ui.common.HorizontalPagerCustom
+import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.viewmodel.AuthViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
+import app.ecommercemedical.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductDetailFragment(
     modifier: Modifier,
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    productId: String
 ) {
+    var isLoading by remember { mutableStateOf(false) }
+    val productViewModel: ProductViewModel = viewModel()
+    val product: ProductItem? = productViewModel.getProductById(productId)
+    LaunchedEffect(Unit) {
+        isLoading = true
+        productViewModel.loadListProduct()
+        isLoading = false
+    }
     LazyColumn(modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween) {
         stickyHeader {
             Row(
@@ -66,65 +78,90 @@ fun ProductDetailFragment(
             }
         }
         item {
-            HorizontalPagerCustom()
-            Spacer(
-                modifier = Modifier.height(24.dp)
-            )
-            Text(
-                "Product 1",
-                modifier = Modifier.padding(horizontal = 24.dp),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight(600)
-            )
-            Spacer(
-                modifier = Modifier.height(14.dp)
-            )
-            Text(
-                "200.000 vnd",
-                modifier = Modifier.padding(horizontal = 24.dp),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight(600)
-            )
-            Spacer(
-                modifier = Modifier.height(14.dp)
-            )
-            Text(
-                "Lorem Simple Horizontal Pager Sample Lorem Simple Horizontal Pager Sample Lorem Simple Horizontal Pager Sample ",
-                modifier = Modifier.padding(horizontal = 24.dp),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Spacer(
-                modifier = Modifier.height(48.dp)
-            )
+            if (product != null) {
+                HorizontalPagerCustom(imageUrls = product.imageUrl)
 
-        }
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp)
-            ) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier.weight(1f),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text("Buy now")
-                }
                 Spacer(
-                    modifier = Modifier.width(14.dp)
+                    modifier = Modifier.height(24.dp)
                 )
-                OutlinedButton(
-                    onClick = {},
-                    modifier = Modifier.weight(1f),
-                    shape = MaterialTheme.shapes.medium
+                Text(
+                    product.name,
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight(600)
+                )
+                Spacer(
+                    modifier = Modifier.height(14.dp)
+                )
+                Text(
+                    "$ ${product.price}",
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight(600)
+                )
+                Spacer(
+                    modifier = Modifier.height(14.dp)
+                )
+                Text(
+                    product.desc + product.desc,
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(
+                    modifier = Modifier.height(14.dp)
+                )
+                Text(
+                    "Quantity: ${product.stockQuantity}",
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(
+                    modifier = Modifier.height(24.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp)
                 ) {
-                    Text("Add to cart")
+                    Button(
+                        onClick = {},
+                        modifier = Modifier.weight(1f),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("Buy now")
+                    }
+                    Spacer(
+                        modifier = Modifier.width(14.dp)
+                    )
+                    OutlinedButton(
+                        onClick = {},
+                        modifier = Modifier.weight(1f),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("Add to cart")
+                    }
                 }
+            } else if (isLoading) {
+                LoadingScreen()
+            } else {
+//                Box(modifier = Modifier.fillMaxSize()) {
+//                    Text(
+//                        "PRODUCT NOT FOUND !",
+//                        modifier = Modifier.fillMaxSize(),
+//                        textAlign = TextAlign.Center,
+//                        style = MaterialTheme.typography.titleLarge,
+//                        fontWeight = FontWeight(600)
+//                    )
+//                }// handle late
+                LoadingScreen()
             }
         }
     }
 }
+
 
 
 

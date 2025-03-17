@@ -41,3 +41,6 @@ data class ProductCard(val id: String, val name: String, val imageUrl: String, v
 //        "Product description 6"
 //    )
 //)
+
+
+// Xử lý các trạng thái khác nếu cần

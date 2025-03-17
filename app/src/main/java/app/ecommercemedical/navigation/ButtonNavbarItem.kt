@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class ButtonNavbarItem(
@@ -24,8 +25,8 @@ sealed class ButtonNavbarItem(
     )
 
     data object product : ButtonNavbarItem(
-        title = "Product",
-        icon = Icons.Default.CheckCircle,
-        route = Product.route
+        title = "About Store",
+        icon = Icons.Rounded.Star,
+        route = About.route
     )
 }

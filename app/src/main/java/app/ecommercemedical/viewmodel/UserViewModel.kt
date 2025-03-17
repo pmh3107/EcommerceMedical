@@ -11,7 +11,9 @@ class UserViewModel(
     private val userRepository: UserRepository = UserRepository()
 ) : ViewModel() {
     private val _userInfo = MutableLiveData<UserInfo?>()
+    private var _updateStatus = MutableLiveData<String?>()
     val userInfo: LiveData<UserInfo?> = _userInfo
+    val updateStatus: LiveData<String?> = _updateStatus
 
     fun loadUserInfo(uid: String) {
         userRepository.fetchUserInfo(
@@ -22,6 +24,21 @@ class UserViewModel(
             onError = { e ->
                 Log.e("UserViewModel", "Error fetching user: ${e.message}")
                 _userInfo.value = null
+            }
+        )
+    }
+
+    fun updateUserInfo(uid: String, updatedProfile: UserInfo) {
+        userRepository.updateUserInfo(
+            uid = uid,
+            updatedProfile = updatedProfile,
+            onSuccess = {
+                _userInfo.value = updatedProfile
+                _updateStatus.value = "success"
+            },
+            onError = { e ->
+                Log.e("UserViewModel", "Error updating user: ${e.message}")
+                _updateStatus.value = "error occurs: ${e.message} "
             }
         )
     }
