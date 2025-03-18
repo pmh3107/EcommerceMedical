@@ -164,7 +164,8 @@ fun Profile(
                                     imageUrl = imageUrl,
                                     firstName = firstName,
                                     lastName = lastName,
-                                    address = address
+                                    address = address,
+                                    wishList = userInfo?.wishList.orEmpty()
                                 )
 
                                 userViewModel.updateUserInfo(uid.toString(), updatedProfile)

@@ -9,16 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,13 +32,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.ecommercemedical.R
-import app.ecommercemedical.data.model.UserInfo
-import app.ecommercemedical.navigation.Flash
-import app.ecommercemedical.navigation.LogIn
+import app.ecommercemedical.navigation.Chat
+import app.ecommercemedical.navigation.MapGG
 import app.ecommercemedical.viewmodel.AuthViewModel
 
 @Composable
@@ -78,7 +74,6 @@ fun AboutStore(
                     )
                 }
 
-                // Detailed introduction section
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,22 +162,22 @@ fun AboutStore(
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = {
-
+                            navController.navigate(Chat.route)
                         },
                         shape = MaterialTheme.shapes.medium
                     ) {
+                        Text(text = "Chat with us")
+                        Spacer(modifier = Modifier.width(6.dp))
                         Icon(
-                            imageVector = Icons.Default.MailOutline,
+                            imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = null,
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "Chat with us")
                     }
                     Spacer(modifier = Modifier.width(14.dp))
                     OutlinedButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-
+                            navController.navigate(MapGG.route)
                         },
                         shape = MaterialTheme.shapes.medium,
                     ) {
@@ -192,7 +187,6 @@ fun AboutStore(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(text = "Store address")
-
                     }
                 }
             }

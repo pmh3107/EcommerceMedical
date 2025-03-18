@@ -11,15 +11,19 @@ class UserViewModel(
     private val userRepository: UserRepository = UserRepository()
 ) : ViewModel() {
     private val _userInfo = MutableLiveData<UserInfo?>()
+    private val _wishList = MutableLiveData<String?>()
     private var _updateStatus = MutableLiveData<String?>()
     val userInfo: LiveData<UserInfo?> = _userInfo
     val updateStatus: LiveData<String?> = _updateStatus
+    var wishList: LiveData<String?> = _wishList
 
     fun loadUserInfo(uid: String) {
         userRepository.fetchUserInfo(
             uid = uid,
             onSuccess = { info ->
+                println("CHECK INFO: $info")
                 _userInfo.value = info
+                _wishList.value = info?.wishList
             },
             onError = { e ->
                 Log.e("UserViewModel", "Error fetching user: ${e.message}")

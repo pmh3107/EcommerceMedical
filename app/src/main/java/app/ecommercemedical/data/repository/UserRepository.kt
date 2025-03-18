@@ -20,12 +20,14 @@ class UserRepository {
         userDocRef.get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
+                    println("CHECK DOC: $document")
                     val userInfo = UserInfo(
                         id = uid,
                         imageUrl = document.getString("imageUrl") ?: "",
                         firstName = document.getString("firstName") ?: "",
                         lastName = document.getString("lastName") ?: "",
-                        address = document.getString("address") ?: ""
+                        address = document.getString("address") ?: "",
+                        wishList = document.getString("wishlist") ?: ""
                     )
                     onSuccess(userInfo)
                 } else {
