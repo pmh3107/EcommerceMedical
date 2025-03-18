@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import app.ecommercemedical.navigation.Checkout
 import app.ecommercemedical.ui.common.BadgeButton
 import app.ecommercemedical.ui.common.HorizontalPagerCustom
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
@@ -74,7 +75,7 @@ fun ProductDetailFragment(
                     fontWeight = FontWeight(700),
                     style = MaterialTheme.typography.titleLarge
                 )
-                BadgeButton()
+                BadgeButton(onNavigateCheckout = { navController.navigate(Checkout.route) })
             }
         }
         item {

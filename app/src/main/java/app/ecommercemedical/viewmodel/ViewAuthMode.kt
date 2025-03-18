@@ -13,7 +13,6 @@ class AuthViewModel : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
-
     private val _userID = MutableLiveData<String>()
     val userID: LiveData<String> get() = _userID
 
@@ -43,30 +42,59 @@ class AuthViewModel : ViewModel() {
                     val uid = auth.currentUser?.uid ?: ""
                     _userID.value = uid
                     val userDocRef = firestore.collection("users").document(uid)
+
                     userDocRef.get()
                         .addOnSuccessListener { document ->
-                            if (!document.exists()) {
-                                val newUserInfo = UserInfo(uid, "", "", "", "")
+                            if (document.exists()) {
+                                val wishlistId = document.getString("wishlist")
+                                if (wishlistId.isNullOrEmpty()) {
+                                    val newWishlistId =
+                                        firestore.collection("wishlists").document().id
+                                    val newWishlist = hashMapOf(
+                                        "userId" to uid,
+                                        "items" to listOf<String>()
+                                    )
+
+                                    firestore.collection("wishlists").document(newWishlistId)
+                                        .set(newWishlist)
+                                        .addOnSuccessListener {
+                                            userDocRef.update("wishlist", newWishlistId)
+                                                .addOnSuccessListener {
+                                                    _authState.value = AuthState.Authenticated
+                                                }
+                                                .addOnFailureListener {
+                                                    _authState.value =
+                                                        AuthState.Error("Can't save wishlist ID")
+                                                }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            _authState.value =
+                                                AuthState.Error("Error creating wishlist: ${e.message}")
+                                        }
+                                } else {
+                                    _authState.value = AuthState.Authenticated
+                                }
+                            } else {
+                                val newUserInfo = UserInfo(uid, "", "", "", "", "")
                                 userDocRef.set(newUserInfo)
                                     .addOnSuccessListener {
                                         _authState.value = AuthState.Authenticated
                                     }
                                     .addOnFailureListener {
-                                        _authState.value =
-                                            AuthState.Error("Can't not create info user")
+                                        _authState.value = AuthState.Error("Can't create user info")
                                     }
-                            } else {
-                                _authState.value = AuthState.Authenticated
                             }
                         }
                         .addOnFailureListener { e ->
-                            _authState.value = AuthState.Error("Can't not check info user")
+                            _authState.value =
+                                AuthState.Error("Can't check user info: ${e.message}")
                         }
                 } else {
                     _authState.value = AuthState.Error(task.exception?.message ?: "Error occurs!")
                 }
             }
     }
+
 
     fun signup(email: String, password: String, firstname: String, lastname: String) {
         if (email.isEmpty() || password.isEmpty()) {
@@ -80,18 +108,44 @@ class AuthViewModel : ViewModel() {
                     val uid = auth.currentUser?.uid ?: ""
                     _userID.value = uid
                     val userDocRef = firestore.collection("users").document(uid)
-                    val newUserInfo = UserInfo(uid, "", firstname, lastname, "")
-                    userDocRef.set(newUserInfo).addOnSuccessListener {
-                        _authState.value = AuthState.Authenticated
-                    }.addOnFailureListener { e ->
-                        _authState.value = AuthState.Error("Can't not create info user")
-                    }
+
+                    val newUserInfo = UserInfo(uid, "", firstname, lastname, "", "")
+                    userDocRef.set(newUserInfo)
+                        .addOnSuccessListener {
+                            val newWishlistId = firestore.collection("wishlists").document().id
+                            val newWishlist = hashMapOf(
+                                "userId" to uid,
+                                "items" to listOf<String>()
+                            )
+
+                            firestore.collection("wishlists").document(newWishlistId)
+                                .set(newWishlist)
+                                .addOnSuccessListener {
+                                    userDocRef.update("wishlist", newWishlistId)
+                                        .addOnSuccessListener {
+                                            _authState.value = AuthState.Authenticated
+                                        }
+                                        .addOnFailureListener {
+                                            _authState.value =
+                                                AuthState.Error("Can't save wishlist ID")
+                                        }
+                                }
+                                .addOnFailureListener { e ->
+                                    _authState.value =
+                                        AuthState.Error("Error creating wishlist: ${e.message}")
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            _authState.value =
+                                AuthState.Error("Can't create user info: ${e.message}")
+                        }
                 } else {
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
     }
+
 
     fun signout() {
         auth.signOut()

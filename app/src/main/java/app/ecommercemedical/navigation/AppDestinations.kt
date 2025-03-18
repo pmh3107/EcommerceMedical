@@ -36,8 +36,19 @@ object About : AppDestinations {
     override val route = "about"
 }
 
+object MapGG : AppDestinations {
+    override val route = "map"
+}
+
+object Chat : AppDestinations {
+    override val route = "chat"
+}
+
 object ProductDetail : AppDestinations {
     override val route = "product_detail/{productId}"
 }
 
+object Checkout : AppDestinations {
+    override val route = "checkout"
+}
 

@@ -12,6 +12,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.ecommercemedical.navigation.AppBottomNavBar
 import app.ecommercemedical.navigation.AppNavHost
+import app.ecommercemedical.navigation.Chat
+import app.ecommercemedical.navigation.Checkout
 import app.ecommercemedical.navigation.Loading
 import app.ecommercemedical.navigation.LogIn
 import app.ecommercemedical.navigation.SignUp
@@ -24,7 +26,7 @@ fun MyApp(modifier: Modifier = Modifier) {
     val currentRoute =
         navController.currentBackStackEntryAsState().value?.destination?.route ?: LogIn.route
     val showBottomBar =
-        currentRoute != LogIn.route && currentRoute != SignUp.route && currentRoute != Loading.route
+        currentRoute != LogIn.route && currentRoute != SignUp.route && currentRoute != Loading.route && currentRoute != Chat.route && currentRoute != Checkout.route
     val authViewModel: AuthViewModel = viewModel()
     Scaffold(
         bottomBar = {

@@ -42,7 +42,7 @@ import app.ecommercemedical.ui.common.BadgeButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchingBar(
-    name: String,
+    name: String?,
     products: List<ProductItem>,
     onProductClick: (ProductItem) -> Unit
 ) {
@@ -94,28 +94,6 @@ fun SearchingBar(
             .fillMaxWidth()
             .semantics { isTraversalGroup = false }
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { traversalIndex = 0f }
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    "Hello",
-                    fontWeight = FontWeight(500),
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    name,
-                    fontWeight = FontWeight(700),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-            BadgeButton()
-        }
         SearchBar(
             inputField = inputFieldComposable,
             expanded = expanded,

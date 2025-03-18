@@ -22,5 +22,6 @@ data class UserInfo(
     var imageUrl: String,
     var firstName: String,
     var lastName: String,
-    var address: String
+    var address: String,
+    var wishList: String,
 )
