@@ -41,6 +41,7 @@ import app.ecommercemedical.R
 import app.ecommercemedical.data.model.UserInfo
 import app.ecommercemedical.navigation.Flash
 import app.ecommercemedical.navigation.LogIn
+import app.ecommercemedical.navigation.Orders
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.viewmodel.AuthViewModel
 import app.ecommercemedical.viewmodel.UserViewModel
@@ -114,6 +115,13 @@ fun Profile(
                                 .clip(RoundedCornerShape(100.dp))
                         )
                         Spacer(modifier = Modifier.height(24.dp))
+                    }
+                    OutlinedButton(
+                        onClick = { navController.navigate(Orders.route) },
+                        modifier = Modifier,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Text("View Orders")
                     }
                     OutlinedTextField(
                         value = imageUrl,

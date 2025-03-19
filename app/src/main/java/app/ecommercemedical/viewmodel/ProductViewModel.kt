@@ -1,15 +1,12 @@
 package app.ecommercemedical.viewmodel
 
+import CategoryItem
 import ProductItem
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import app.ecommercemedical.data.repository.ProductRepository
-import app.ecommercemedical.ui.dataUI.CategoryItem
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.time.debounce
 
 class ProductViewModel(
     private val productRepository: ProductRepository = ProductRepository()

@@ -1,3 +1,9 @@
+data class CategoryItem(
+    val id: String,
+    val name: String,
+    val imageUrl: String
+)
+
 data class ProductItem(
     val id: String,
     val name: String,

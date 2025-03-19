@@ -48,7 +48,10 @@ object ProductDetail : AppDestinations {
     override val route = "product_detail/{productId}"
 }
 
-object Checkout : AppDestinations {
-    override val route = "checkout"
+object Cart : AppDestinations {
+    override val route = "cart"
 }
 
+object Orders : AppDestinations {
+    override val route = "orders"
+}

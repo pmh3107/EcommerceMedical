@@ -67,8 +67,6 @@ fun ChatScreen(
 ) {
     val sdf = SimpleDateFormat("hh:mm")
     val currentTime = sdf.format(Date())
-//    val currentTime = Calendar.
-    println(" CHECK DATE :  " + currentTime)
     val messages = remember {
         mutableStateListOf(
             ChatMessage(1, "Hello! This is customer service online", false, currentTime),

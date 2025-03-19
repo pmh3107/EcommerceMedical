@@ -1,6 +1,7 @@
 package app.ecommercemedical.ui.screens.product
 
 import ProductItem
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,22 +22,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import app.ecommercemedical.navigation.Checkout
+import app.ecommercemedical.data.model.WishListProduct
+import app.ecommercemedical.navigation.Cart
 import app.ecommercemedical.ui.common.BadgeButton
 import app.ecommercemedical.ui.common.HorizontalPagerCustom
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.viewmodel.AuthViewModel
+import app.ecommercemedical.viewmodel.OrderViewModel
 import app.ecommercemedical.viewmodel.ProductViewModel
+import app.ecommercemedical.viewmodel.UserViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -44,15 +47,44 @@ fun ProductDetailFragment(
     modifier: Modifier,
     navController: NavController,
     authViewModel: AuthViewModel,
-    productId: String
+    productId: String,
 ) {
-    var isLoading by remember { mutableStateOf(false) }
     val productViewModel: ProductViewModel = viewModel()
+    val userViewModel: UserViewModel = viewModel()
+    val orderViewModel: OrderViewModel = viewModel()
     val product: ProductItem? = productViewModel.getProductById(productId)
+    val context = LocalContext.current
+    val wishListId by userViewModel.wishList.observeAsState()
+    val uid by authViewModel.userID.observeAsState()
+    val updateStatus by orderViewModel.updateStatus.observeAsState()
+
     LaunchedEffect(Unit) {
-        isLoading = true
+        if (uid.toString().isNotEmpty()) {
+            userViewModel.loadUserInfo(uid.toString())
+        }
         productViewModel.loadListProduct()
-        isLoading = false
+    }
+
+    LaunchedEffect(updateStatus) {
+        updateStatus?.let { status ->
+            if (status.startsWith("success")) {
+                Toast.makeText(context, "Add ${product?.name} Successfully", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (status.startsWith("error")) {
+                Toast.makeText(context, "Error occurs: $status", Toast.LENGTH_SHORT).show()
+            } else if (status.startsWith("duplicate")) {
+                Toast.makeText(
+                    context,
+                    "Add more ${product?.name}",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+        }
+    }
+    val isProductReady = product != null && wishListId.toString().isNotEmpty()
+    if (!isProductReady) {
+        LoadingScreen()
     }
     LazyColumn(modifier = Modifier, verticalArrangement = Arrangement.SpaceBetween) {
         stickyHeader {
@@ -75,7 +107,7 @@ fun ProductDetailFragment(
                     fontWeight = FontWeight(700),
                     style = MaterialTheme.typography.titleLarge
                 )
-                BadgeButton(onNavigateCheckout = { navController.navigate(Checkout.route) })
+                BadgeButton(onNavigateCheckout = { navController.navigate(Cart.route) })
             }
         }
         item {
@@ -128,7 +160,15 @@ fun ProductDetailFragment(
                         .padding(horizontal = 14.dp)
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            val newWishListProduct =
+                                WishListProduct(productId = product.id, quantity = 1)
+                            orderViewModel.addWishListProduct(
+                                wishListId = wishListId ?: "",
+                                newItem = newWishListProduct,
+                            )
+                            navController.navigate(Cart.route)
+                        },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium
                     ) {
@@ -138,15 +178,20 @@ fun ProductDetailFragment(
                         modifier = Modifier.width(14.dp)
                     )
                     OutlinedButton(
-                        onClick = {},
+                        onClick = {
+                            val newWishListProduct =
+                                WishListProduct(productId = product.id, quantity = 1)
+                            orderViewModel.addWishListProduct(
+                                wishListId = wishListId ?: "",
+                                newItem = newWishListProduct,
+                            )
+                        },
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.medium
                     ) {
                         Text("Add to cart")
                     }
                 }
-            } else if (isLoading) {
-                LoadingScreen()
             } else {
 //                Box(modifier = Modifier.fillMaxSize()) {
 //                    Text(
@@ -155,9 +200,8 @@ fun ProductDetailFragment(
 //                        textAlign = TextAlign.Center,
 //                        style = MaterialTheme.typography.titleLarge,
 //                        fontWeight = FontWeight(600)
-//                    )
-//                }// handle late
-                LoadingScreen()
+//                    ) // handle late
+//                }
             }
         }
     }
