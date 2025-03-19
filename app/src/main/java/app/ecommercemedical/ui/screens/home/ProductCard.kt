@@ -1,5 +1,6 @@
 package app.ecommercemedical.ui.screens.home
 
+import CategoryItem
 import CategorySection
 import ProductItem
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.ecommercemedical.R
 import app.ecommercemedical.ui.common.HorizontalPagerCustom
-import app.ecommercemedical.ui.dataUI.CategoryItem
 import coil.compose.AsyncImage
 
 @Composable

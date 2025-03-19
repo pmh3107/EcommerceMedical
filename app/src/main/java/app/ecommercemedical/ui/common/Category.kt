@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.ecommercemedical.R
-import app.ecommercemedical.ui.dataUI.CategoryItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 

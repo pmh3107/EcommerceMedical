@@ -1,23 +1,31 @@
 package app.ecommercemedical.ui
 
 
+import android.provider.Settings.Global.getString
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.ecommercemedical.R
 import app.ecommercemedical.navigation.AppBottomNavBar
 import app.ecommercemedical.navigation.AppNavHost
+import app.ecommercemedical.navigation.Cart
 import app.ecommercemedical.navigation.Chat
-import app.ecommercemedical.navigation.Checkout
 import app.ecommercemedical.navigation.Loading
 import app.ecommercemedical.navigation.LogIn
 import app.ecommercemedical.navigation.SignUp
 import app.ecommercemedical.viewmodel.AuthViewModel
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 @Composable
@@ -26,8 +34,18 @@ fun MyApp(modifier: Modifier = Modifier) {
     val currentRoute =
         navController.currentBackStackEntryAsState().value?.destination?.route ?: LogIn.route
     val showBottomBar =
-        currentRoute != LogIn.route && currentRoute != SignUp.route && currentRoute != Loading.route && currentRoute != Chat.route && currentRoute != Checkout.route
+        currentRoute != LogIn.route && currentRoute != SignUp.route && currentRoute != Loading.route && currentRoute != Chat.route && currentRoute != Cart.route
     val authViewModel: AuthViewModel = viewModel()
+    val context = LocalContext.current
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+            return@OnCompleteListener
+        }
+        val token = task.result
+        println("TOKEN IS HERE: $token")
+//        Toast.makeText(context, "TOKEN: $token", Toast.LENGTH_SHORT).show()
+    })
     Scaffold(
         bottomBar = {
             if (showBottomBar) {

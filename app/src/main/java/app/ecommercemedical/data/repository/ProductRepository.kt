@@ -1,8 +1,8 @@
 package app.ecommercemedical.data.repository
 
+import CategoryItem
 import ProductItem
 import android.util.Log
-import app.ecommercemedical.ui.dataUI.CategoryItem
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ProductRepository {
@@ -81,8 +81,8 @@ class ProductRepository {
                                 val id = item["id"] as? String ?: ""
                                 val name = item["name"] as? String ?: ""
                                 val imageUrl = when (val urlData = item["imageUrl"]) {
-                                    is List<*> -> urlData.filterIsInstance<String>() // Lấy danh sách URL
-                                    else -> emptyList() // Nếu không phải danh sách, trả về rỗng
+                                    is List<*> -> urlData.filterIsInstance<String>()
+                                    else -> emptyList()
                                 }
                                 val desc = item["desc"] as? String ?: ""
                                 val price = (item["price"] as? Number)?.toDouble() ?: 0.0

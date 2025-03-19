@@ -1,6 +1,5 @@
 package app.ecommercemedical.ui.screens.home
 
-import MainPushProduct
 import SearchingBar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,15 +26,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import app.ecommercemedical.navigation.Checkout
+import app.ecommercemedical.navigation.Cart
 import app.ecommercemedical.ui.common.BadgeButton
-import app.ecommercemedical.ui.dataUI.CategoryItem
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.viewmodel.AuthViewModel
 import app.ecommercemedical.viewmodel.ProductViewModel
 import app.ecommercemedical.viewmodel.UserViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 
 @Composable
 fun Home(
@@ -45,13 +41,11 @@ fun Home(
     productViewModel: ProductViewModel = viewModel(),
     userViewModel: UserViewModel = viewModel()
 ) {
-    val imageBanner by productViewModel.imageBanner.observeAsState(emptyList())
-    val categoryList by productViewModel.categoryList.observeAsState(emptyList())
-    val listProduct by productViewModel.productList.observeAsState(emptyList())
+    val imageBanner by productViewModel.imageBanner.observeAsState()
+    val categoryList by productViewModel.categoryList.observeAsState()
+    val listProduct by productViewModel.productList.observeAsState()
     val uid by authViewModel.userID.observeAsState()
     val userInfo by userViewModel.userInfo.observeAsState()
-    val wishListId by userViewModel.wishList.observeAsState()
-    println("CHECK WISHLIST: $wishListId")
     var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -66,10 +60,13 @@ fun Home(
         // MainPushProduct()
         isLoading = false
     }
+    val isReady =
+        listProduct != null && categoryList != null && imageBanner != null && userInfo != null
+
     Surface(
         modifier = Modifier
     ) {
-        if (isLoading) {
+        if (!isReady) {
             LoadingScreen()
         } else {
             Column {
@@ -93,11 +90,12 @@ fun Home(
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
-                    BadgeButton(onNavigateCheckout = { navController.navigate(Checkout.route) })
+                    BadgeButton(
+                        onNavigateCheckout = { navController.navigate(Cart.route) })
                 }
                 SearchingBar(
                     name = userInfo?.lastName.toString(),
-                    products = listProduct,
+                    products = listProduct ?: emptyList(),
                     onProductClick = { product ->
                         navController.navigate("product_detail/${product.id}")
                     }
@@ -105,9 +103,9 @@ fun Home(
                 Spacer(modifier = Modifier.height(16.dp))
                 ViewListCard(
                     navController = navController,
-                    imageBanner = imageBanner,
-                    categoryList = categoryList,
-                    listProduct = listProduct
+                    imageBanner = imageBanner ?: emptyList(),
+                    categoryList = categoryList ?: emptyList(),
+                    listProduct = listProduct ?: emptyList()
                 )
             }
         }

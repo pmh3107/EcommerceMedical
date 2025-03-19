@@ -1,7 +1,6 @@
 package app.ecommercemedical.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -14,15 +13,15 @@ import app.ecommercemedical.ui.screens.about.AboutStore
 import app.ecommercemedical.ui.screens.auth.LoginScreen
 import app.ecommercemedical.ui.screens.auth.Profile
 import app.ecommercemedical.ui.screens.auth.RegisterScreen
-import app.ecommercemedical.ui.screens.cart.CheckoutScreen
+import app.ecommercemedical.ui.screens.cart.CartScreen
 import app.ecommercemedical.ui.screens.chat.ChatScreen
 import app.ecommercemedical.ui.screens.flash.FlashScreen
 import app.ecommercemedical.ui.screens.home.Home
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
 import app.ecommercemedical.ui.screens.map.MapScreen
+import app.ecommercemedical.ui.screens.order.OrderScreen
 import app.ecommercemedical.ui.screens.product.ProductDetailFragment
 import app.ecommercemedical.ui.screens.product.ProductList
-import app.ecommercemedical.viewmodel.AuthState
 import app.ecommercemedical.viewmodel.AuthViewModel
 
 //@Composable
@@ -86,10 +85,12 @@ fun AppNavHost(
         composable(Chat.route) {
             ChatScreen(modifier, navController, authViewModel)
         }
-        composable(Checkout.route) {
-            CheckoutScreen(modifier, navController, authViewModel)
+        composable(Cart.route) {
+            CartScreen(modifier, navController, authViewModel)
         }
-
+        composable(Orders.route) {
+            OrderScreen(modifier, navController, authViewModel)
+        }
         composable(
             route = ProductDetail.route,
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
