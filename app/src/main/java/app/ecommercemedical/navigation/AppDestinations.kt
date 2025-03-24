@@ -16,9 +16,6 @@ object LogIn : AppDestinations {
     override val route = "login"
 }
 
-object Product : AppDestinations {
-    override val route = "product"
-}
 
 object SignUp : AppDestinations {
     override val route = "signup"
@@ -47,6 +44,11 @@ object Chat : AppDestinations {
 object ProductDetail : AppDestinations {
     override val route = "product_detail/{productId}"
 }
+
+object Product : AppDestinations {
+    override val route = "product/{categoryId}"
+}
+
 
 object Cart : AppDestinations {
     override val route = "cart"

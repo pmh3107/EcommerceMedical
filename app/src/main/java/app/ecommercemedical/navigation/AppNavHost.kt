@@ -1,5 +1,6 @@
 package app.ecommercemedical.navigation
 
+import AddressScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -73,9 +74,7 @@ fun AppNavHost(
         composable(Profile.route) {
             Profile(modifier, navController, authViewModel)
         }
-        composable(Product.route) {
-            ProductList(modifier, navController, authViewModel)
-        }
+
         composable(About.route) {
             AboutStore(modifier, navController, authViewModel)
         }
@@ -98,6 +97,15 @@ fun AppNavHost(
             val productId = backStackEntry.arguments?.getString("productId")
             if (productId != null) {
                 ProductDetailFragment(modifier, navController, authViewModel, productId)
+            }
+        }
+        composable(
+            route = Product.route,
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId")
+            if (categoryId != null) {
+                ProductList(categoryId, modifier, navController, authViewModel)
             }
         }
     }

@@ -2,9 +2,11 @@ package app.ecommercemedical.navigation
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,7 +28,9 @@ fun AppBottomNavBar(
     )
 
     BottomNavigation(
-        modifier = Modifier.height(80.dp),
+        modifier = Modifier
+            .height(80.dp)
+            .padding(bottom = 45.dp),
         backgroundColor = Color.White
     ) {
         val currentRoute =
@@ -45,16 +49,18 @@ fun AppBottomNavBar(
                 },
                 icon = {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         imageVector = item.icon,
                         contentDescription = null,
 //                        tint = MaterialTheme.colorScheme.primary
                     )
                 },
-                
+
                 label = {
                     Text(
                         text = item.title,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelSmall
 //                        color = MaterialTheme.colorScheme.primary
                     )
                 },

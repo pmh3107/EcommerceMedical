@@ -2,8 +2,11 @@ package app.ecommercemedical.data.repository
 
 import android.util.Log
 import app.ecommercemedical.data.model.OrderItem
+import app.ecommercemedical.data.model.OrderProduct
 import app.ecommercemedical.data.model.WishList
 import app.ecommercemedical.data.model.WishListProduct
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -61,6 +64,25 @@ class OrderRepository {
             }
     }
 
+    fun removeWishList(
+        wishlistId: String,
+        userId: String,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        if (wishlistId.isEmpty()) {
+            onSuccess()
+        }
+        val upLoadWishList: WishList = WishList(userId = userId, items = emptyList())
+        firestore.collection("wishlists").document(wishlistId).set(upLoadWishList)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { error ->
+                onError(error)
+            }
+    }
+
     fun createOrder(
         orderItem: OrderItem,
         onSuccess: (String) -> Unit,
@@ -100,20 +122,44 @@ class OrderRepository {
             onSuccess(emptyList())
             return
         }
-        println("CHECK REPO ORDER ID: $orderIds")
-        firestore.collection("orders")
-            .whereIn("orderId", orderIds)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val orders = querySnapshot.documents.mapNotNull { document ->
-                    val orderItem =
-                        document.toObject(OrderItem::class.java)?.copy(orderId = document.id)
-                    orderItem
+        val orderList: MutableList<OrderItem> = mutableListOf()
+        val task = orderIds.map { orderId ->
+            firestore.collection("orders").document(orderId).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val orderDate: Timestamp =
+                            document.get("orderDate") as? Timestamp ?: Timestamp(0, 0)
+                        val products =
+                            document.get("products") as? List<Map<String, Any>> ?: emptyList()
+                        val listProduct = products.mapNotNull { item ->
+                            val productId = item["productId"] as? String
+                            val quantity = item["quantity"] as? Long
+                            if (productId != null && quantity != null) {
+                                OrderProduct(productId = productId, quantity = quantity.toInt())
+                            } else {
+                                null
+                            }
+                        }
+                        val shippingAddress = document.get("shippingAddress") ?: ""
+                        val status = document.get("status") ?: ""
+                        val orderItem = OrderItem(
+                            orderId = orderId,
+                            orderDate = orderDate,
+                            products = listProduct,
+                            status = status.toString(),
+                            shippingAddress = shippingAddress.toString(),
+                            userId = ""
+                        )
+                        orderList.add(orderItem)
+                    } else {
+                        null
+                    }
                 }
-                onSuccess(orders)
-            }
-            .addOnFailureListener { exception ->
-                onError(exception)
-            }
+        }
+        Tasks.whenAllComplete(*task.toTypedArray()).addOnCompleteListener {
+            onSuccess(orderList)
+        }.addOnFailureListener { exception ->
+            onError(exception)
+        }
     }
 }

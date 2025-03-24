@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,7 +40,7 @@ import app.ecommercemedical.viewmodel.AuthViewModel
 
 @Composable
 fun AboutStore(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     navController: NavController,
     authViewModel: AuthViewModel,
 ) {
@@ -51,7 +50,7 @@ fun AboutStore(
         ) {
             item {
                 Image(
-                    painter = painterResource(id = R.drawable.banner),
+                    painter = painterResource(id = R.drawable.img_not_found),
                     contentDescription = "Store Banner",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -108,7 +107,7 @@ fun AboutStore(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.example_img),
+                        painter = painterResource(id = R.drawable.img_not_found),
                         contentDescription = "Store Interior 1",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -117,7 +116,7 @@ fun AboutStore(
                             .clip(RoundedCornerShape(8.dp))
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.example_img),
+                        painter = painterResource(id = R.drawable.img_not_found),
                         contentDescription = "Store Interior 2",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -169,6 +168,7 @@ fun AboutStore(
                         Text(text = "Chat with us")
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             imageVector = Icons.AutoMirrored.Filled.Send,
                             contentDescription = null,
                         )
@@ -182,6 +182,7 @@ fun AboutStore(
                         shape = MaterialTheme.shapes.medium,
                     ) {
                         Icon(
+                            modifier = Modifier.size(20.dp),
                             imageVector = Icons.Default.Place,
                             contentDescription = null,
                         )

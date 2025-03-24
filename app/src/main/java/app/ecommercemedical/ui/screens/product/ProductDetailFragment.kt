@@ -1,7 +1,6 @@
 package app.ecommercemedical.ui.screens.product
 
 import ProductItem
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -36,6 +35,7 @@ import app.ecommercemedical.navigation.Cart
 import app.ecommercemedical.ui.common.BadgeButton
 import app.ecommercemedical.ui.common.HorizontalPagerCustom
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
+import app.ecommercemedical.utils.showSimpleNotification
 import app.ecommercemedical.viewmodel.AuthViewModel
 import app.ecommercemedical.viewmodel.OrderViewModel
 import app.ecommercemedical.viewmodel.ProductViewModel
@@ -68,17 +68,11 @@ fun ProductDetailFragment(
     LaunchedEffect(updateStatus) {
         updateStatus?.let { status ->
             if (status.startsWith("success")) {
-                Toast.makeText(context, "Add ${product?.name} Successfully", Toast.LENGTH_SHORT)
-                    .show()
+                showSimpleNotification(context, "Add ${product?.name} Successfully!")
             } else if (status.startsWith("error")) {
-                Toast.makeText(context, "Error occurs: $status", Toast.LENGTH_SHORT).show()
+                showSimpleNotification(context, "Error occurs: $status")
             } else if (status.startsWith("duplicate")) {
-                Toast.makeText(
-                    context,
-                    "Add more ${product?.name}",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                showSimpleNotification(context, "Add more ${product?.name}")
             }
         }
     }
