@@ -1,12 +1,12 @@
-package app.ecommercemedical.ui.theme
+package com.example.myapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val LightGreen80 = Color(0xFFDAFFEF)
-val LightLime80 = Color(0xFFD0FFD6)
-val PaleOlive80 = Color(0xFFD5E2BC)
+val Purple80 = Color(0xFFD0BCFF)
+val PurpleGrey80 = Color(0xFFCCC2DC)
+val Pink80 = Color(0xFFEFB8C8)
 
-val DarkGreen40 = Color(0xFF6D8078)
-val DarkLime40 = Color(0xFF68806B)
-val DarkOlive40 = Color(0xFF6B715E)
+val Purple40 = Color(0xFF6650a4)
+val PurpleGrey40 = Color(0xFF625b71)
+val Pink40 = Color(0xFF7D5260)
 

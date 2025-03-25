@@ -114,4 +114,48 @@ class ProductRepository {
             }
     }
 
+    fun getListProductPaginated(
+        page: Int,
+        pageSize: Int,
+        onSuccess: (List<ProductItem>) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        val startIndex = (page - 1) * pageSize
+        firestore.collection("product")
+            .document("product_list")
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val productsData = document.get("products")
+                    if (productsData is List<*>) {
+                        val products =
+                            productsData.drop(startIndex).take(pageSize).mapNotNull { item ->
+                                if (item is Map<*, *>) {
+                                    val id = item["id"] as? String ?: ""
+                                    val name = item["name"] as? String ?: ""
+                                    val imageUrl = item["imageUrl"] as? List<String> ?: emptyList()
+                                    val desc = item["desc"] as? String ?: ""
+                                    val price = (item["price"] as? Number)?.toDouble() ?: 0.0
+                                    val stockQuantity =
+                                        (item["stockQuantity"] as? Number)?.toInt() ?: 0
+                                    val categoryId = item["categoryId"] as? String ?: ""
+                                    ProductItem(
+                                        id,
+                                        name,
+                                        imageUrl,
+                                        desc,
+                                        price,
+                                        stockQuantity,
+                                        categoryId
+                                    )
+                                } else null
+                            }
+                        onSuccess(products)
+                    }
+                } else {
+                    onSuccess(emptyList())
+                }
+            }
+            .addOnFailureListener(onError)
+    }
 }

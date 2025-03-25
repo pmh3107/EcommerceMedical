@@ -1,20 +1,16 @@
 package app.ecommercemedical.ui
 
 
-import android.provider.Settings.Global.getString
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import app.ecommercemedical.R
 import app.ecommercemedical.navigation.AppBottomNavBar
 import app.ecommercemedical.navigation.AppNavHost
 import app.ecommercemedical.navigation.Cart
@@ -36,7 +32,6 @@ fun MyApp(modifier: Modifier = Modifier) {
     val showBottomBar =
         currentRoute != LogIn.route && currentRoute != SignUp.route && currentRoute != Loading.route && currentRoute != Chat.route && currentRoute != Cart.route
     val authViewModel: AuthViewModel = viewModel()
-    val context = LocalContext.current
     FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
         if (!task.isSuccessful) {
             Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -44,7 +39,6 @@ fun MyApp(modifier: Modifier = Modifier) {
         }
         val token = task.result
         println("TOKEN IS HERE: $token")
-//        Toast.makeText(context, "TOKEN: $token", Toast.LENGTH_SHORT).show()
     })
     Scaffold(
         bottomBar = {

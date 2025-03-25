@@ -2,7 +2,6 @@ package app.ecommercemedical.ui.screens.chat
 
 
 import android.annotation.SuppressLint
-import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,19 +44,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import app.ecommercemedical.data.model.ChatMessage
+import app.ecommercemedical.data.repository.ChatRepository
 import app.ecommercemedical.viewmodel.AuthViewModel
-import java.util.Calendar
-import java.util.Date
+import app.ecommercemedical.viewmodel.ChatViewModel
+import app.ecommercemedical.viewmodel.ChatViewModelFactory
 
-data class ChatMessage(
-    val id: Int,
-    val text: String,
-    val isSentByMe: Boolean,
-    val timestamp: String
-)
 
-@SuppressLint("SimpleDateFormat")
+@SuppressLint("SimpleDateFormat", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
@@ -65,17 +61,15 @@ fun ChatScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
 ) {
-    val sdf = SimpleDateFormat("hh:mm")
-    val currentTime = sdf.format(Date())
-    val messages = remember {
-        mutableStateListOf(
-            ChatMessage(1, "Hello! This is customer service online", false, currentTime),
-            ChatMessage(2, "How can we assist you ?", false, currentTime),
-        )
-    }
-
+    val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModelFactory(ChatRepository()))
     var messageText by remember { mutableStateOf("") }
+    val messages by chatViewModel.messages.observeAsState(emptyList())
+    val currentUserId by authViewModel.userID.observeAsState()
+    println("CHECK UID: $currentUserId")
 
+//    val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModelFactory(ChatRepository()))
+//    var messageText by remember { mutableStateOf("") }
+//    val message by chatViewModel.messages.observeAsState(emptyList())
     Scaffold(
         topBar = {
             TopAppBar(
@@ -134,14 +128,7 @@ fun ChatScreen(
                 IconButton(
                     onClick = {
                         if (messageText.isNotBlank()) {
-                            messages.add(
-                                ChatMessage(
-                                    id = messages.size + 1,
-                                    text = messageText,
-                                    isSentByMe = true,
-                                    timestamp = currentTime
-                                )
-                            )
+                            chatViewModel.sendMessage(messageText, currentUserId.toString())
                             messageText = ""
                         }
                     },
@@ -165,38 +152,39 @@ fun ChatScreen(
                 .padding(paddingValues),
             reverseLayout = true
         ) {
-            items(messages.reversed()) { message ->
-                ChatMessageItem(message)
-            }
+//            items(messages.reversed()) { message ->
+//                ChatMessageItem(message, currentUserId.toString())
+//            }
         }
     }
 }
 
 @Composable
-fun ChatMessageItem(message: ChatMessage) {
+fun ChatMessageItem(message: ChatMessage, currentUserId: String) {
+    val isSentByMe = message.sender == currentUserId
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = if (message.isSentByMe) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isSentByMe) Arrangement.End else Arrangement.Start
     ) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .background(
-                    if (message.isSentByMe) Color(0xFF2196F3) else Color.White
+                    if (isSentByMe) Color(0xFF2196F3) else Color.White
                 )
                 .padding(12.dp)
         ) {
             Column {
                 Text(
                     text = message.text,
-                    color = if (message.isSentByMe) Color.White else Color.Black,
+                    color = if (isSentByMe) Color.White else Color.Black,
                     fontSize = 16.sp
                 )
                 Text(
                     text = message.timestamp,
-                    color = if (message.isSentByMe) Color(0xFFD1E8FF) else Color.Gray,
+                    color = if (isSentByMe) Color(0xFFD1E8FF) else Color.Gray,
                     fontSize = 12.sp,
                     modifier = Modifier.align(Alignment.End)
                 )

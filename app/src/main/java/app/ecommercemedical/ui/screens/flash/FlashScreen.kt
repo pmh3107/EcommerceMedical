@@ -1,6 +1,7 @@
 package app.ecommercemedical.ui.screens.flash
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,6 +18,7 @@ import app.ecommercemedical.navigation.LogIn
 import app.ecommercemedical.viewmodel.AuthState
 import app.ecommercemedical.viewmodel.AuthViewModel
 
+
 @Composable
 fun FlashScreen(
     modifier: Modifier = Modifier,
@@ -28,10 +30,9 @@ fun FlashScreen(
         when (authState) {
             is AuthState.Authenticated -> navController.navigate(Home.route)
             is AuthState.Unauthenticated -> navController.navigate(LogIn.route)
-            else -> Unit
+            else -> Log.e("AuthView", "Something wrong wrong ... $authViewModel")
         }
     }
-    // fetch data and navigate to home
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),

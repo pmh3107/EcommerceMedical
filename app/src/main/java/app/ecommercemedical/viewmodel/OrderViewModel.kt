@@ -17,7 +17,7 @@ class OrderViewModel(
     private var _updateStatus = MutableLiveData<String?>()
     val wishList: LiveData<WishList> = _wishList
     val updateStatus: LiveData<String?> = _updateStatus
-    private val _orders = MutableLiveData<List<OrderItem>>()
+    private val _orders = MutableLiveData<List<OrderItem>>(emptyList())
     val orders: LiveData<List<OrderItem>> = _orders
 
     fun loadWishList(wishListId: String) {
@@ -66,7 +66,6 @@ class OrderViewModel(
         val currentWishList = _wishList.value
         val updatedItems =
             currentWishList?.items?.filter { it?.productId != wishListProduct }
-        println("CHECK DELETED: ($wishListProduct) $updatedItems")
         if (updatedItems != null) {
             val updatedWishList = currentWishList.copy(items = updatedItems)
             orderRepository.uploadWishList(
@@ -81,6 +80,14 @@ class OrderViewModel(
                 }
             )
         }
+    }
+
+    fun emptyWishList(wishListId: String, userId: String) {
+        orderRepository.removeWishList(
+            wishListId,
+            userId,
+            onSuccess = { Log.e("OrderViewModel", "successful empty wish list ~ !") },
+            onError = { e -> Log.e("OrderViewModel", "Error updating quantity: ${e.message}") })
     }
 
     fun updateProductQuantity(wishListId: String, productId: String, newQuantity: Int) {
@@ -112,16 +119,23 @@ class OrderViewModel(
         )
     }
 
-    fun placeOrder(orderItem: OrderItem, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        orderRepository.createOrder(orderItem, { orderId ->
-            orderRepository.addOrderToUser(orderItem.userId, orderId, {
-                onSuccess()
+    fun placeOrder(
+        orderItem: OrderItem,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        orderRepository.createOrder(
+            orderItem = orderItem,
+            { orderId ->
+                orderRepository.addOrderToUser(orderItem.userId, orderId, {
+                    onSuccess()
+                }, { e ->
+                    onError(e)
+                })
+
             }, { e ->
                 onError(e)
             })
-        }, { e ->
-            onError(e)
-        })
     }
 
     fun loadOrders(orderIds: List<String>) {

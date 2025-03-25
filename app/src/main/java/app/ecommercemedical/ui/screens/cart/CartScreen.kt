@@ -1,9 +1,10 @@
 package app.ecommercemedical.ui.screens.cart
 
+import AddressScreen
 import ProductItem
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,10 +22,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -36,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,10 +64,12 @@ import androidx.navigation.NavController
 import app.ecommercemedical.R
 import app.ecommercemedical.data.model.OrderItem
 import app.ecommercemedical.data.model.OrderProduct
-import app.ecommercemedical.data.model.WishList
 import app.ecommercemedical.data.model.WishListProduct
-import app.ecommercemedical.navigation.Home
+import app.ecommercemedical.navigation.Orders
 import app.ecommercemedical.ui.screens.loading.LoadingScreen
+import app.ecommercemedical.utils.calculateTotalPrice
+import app.ecommercemedical.utils.roundTo
+import app.ecommercemedical.utils.showSimpleNotification
 import app.ecommercemedical.viewmodel.AuthViewModel
 import app.ecommercemedical.viewmodel.OrderViewModel
 import app.ecommercemedical.viewmodel.ProductViewModel
@@ -73,14 +77,13 @@ import app.ecommercemedical.viewmodel.UserViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.firebase.Timestamp
-import kotlin.math.round
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
 ) {
     val userViewModel: UserViewModel = viewModel()
     val orderViewModel: OrderViewModel = viewModel()
@@ -92,7 +95,9 @@ fun CartScreen(
     val updateStatus by orderViewModel.updateStatus.observeAsState()
     val userInfo by userViewModel.userInfo.observeAsState()
     val context = LocalContext.current
-    var address by remember(userInfo) { mutableStateOf(userInfo?.address.orEmpty()) }
+    val address by remember(userInfo) { mutableStateOf(userInfo?.address.orEmpty()) }
+    var isUpdateAddress by remember { mutableStateOf(false) }
+
     LaunchedEffect(wishListId) {
         if (uid.toString().isNotEmpty()) {
             userViewModel.loadUserInfo(uid.toString())
@@ -145,26 +150,69 @@ fun CartScreen(
         },
         bottomBar = {
             if (wishlist?.items?.isEmpty() == false) {
-                Column(modifier = Modifier.background(Color.White)) {
-                    OutlinedTextField(
-                        value = address,
-                        onValueChange = { address = it },
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(4.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(4f)
+                                .border(
+                                    width = 1.dp,
+                                    shape = MaterialTheme.shapes.medium,
+                                    color = Color.Gray
+                                )
+                                .padding(10.dp)
+                        ) {
+                            Text(
+                                text = "Delivery Address:",
+                                modifier = Modifier,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight(600)
+                            )
+                            Text(
+                                text = address,
+                                modifier = Modifier,
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Button(
+                            onClick = { isUpdateAddress = !isUpdateAddress },
+                            modifier = Modifier
+                                .weight(1f),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Create,
+                                contentDescription = "Create",
+                            )
+                        }
+                    }
+                    if (isUpdateAddress) {
+                        AddressScreen(uid = uid.toString(), { isUpdateAddress = !isUpdateAddress })
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
-                        label = { Text("Delivery Address") },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { })
+                            .height(0.5.dp)
+                            .background(Color.Gray)
                     )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 20.dp),
+                            .padding(vertical = 10.dp, horizontal = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            "Total:  ${
+                            "Total: ${
                                 wishlist?.items?.let {
                                     calculateTotalPrice(
                                         it,
@@ -187,19 +235,26 @@ fun CartScreen(
                                     products = orderProducts,
                                     shippingAddress = address
                                 )
-                                orderViewModel.placeOrder(orderItem, {
-                                    Toast.makeText(
+                                if (address.isNotEmpty()) {
+                                    orderViewModel.placeOrder(orderItem, {
+                                        orderViewModel.emptyWishList(
+                                            wishListId.toString(),
+                                            uid.toString()
+                                        )
+                                        showSimpleNotification(context, "Order placed successfully")
+                                        navController.navigate(Orders.route)
+                                    }, { e ->
+                                        showSimpleNotification(
+                                            context,
+                                            "Error placing order: ${e.message}"
+                                        )
+                                    })
+                                } else {
+                                    showSimpleNotification(
                                         context,
-                                        "Order placed successfully",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }, { e ->
-                                    Toast.makeText(
-                                        context,
-                                        "Error placing order: ${e.message}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                })
+                                        "You need to add address first !"
+                                    )
+                                }
                             },
                             shape = MaterialTheme.shapes.medium
                         ) {
@@ -218,27 +273,6 @@ fun CartScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                if (wishlist?.items?.isEmpty() == true && wishListId.toString().isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 200.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            "Empty List !!!",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight(600)
-                        )
-                        TextButton(onClick = { navController.navigate(Home.route) }) {
-                            Text(
-                                "View product", style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    }
-                }
-            }
             filteredWishlistItems?.let {
                 items(it) { (product, item) ->
                     if (item != null) {
@@ -248,7 +282,7 @@ fun CartScreen(
                             removeProductFromWishList = {
                                 orderViewModel.removeProductFromWishList(
                                     wishListId = wishListId.toString(),
-                                    item.productId as? String
+                                    item.productId,
                                 )
                             },
                             updateQuantity = { newQuantity ->
@@ -273,13 +307,12 @@ fun CartItemView(
     product: ProductItem,
     item: WishListProduct,
     removeProductFromWishList: () -> Unit,
-    updateQuantity: (Int) -> Unit, // Thêm tham số này
+    updateQuantity: (Int) -> Unit,
     navigateToProduct: () -> Unit
 ) {
     val context = LocalContext.current
     var quantity by remember { mutableIntStateOf(item.quantity) }
 
-    // Cập nhật số lượng trong Firestore khi quantity thay đổi
     LaunchedEffect(quantity) {
         updateQuantity(quantity)
     }
@@ -370,16 +403,4 @@ fun CartItemView(
     }
 }
 
-fun calculateTotalPrice(wishlist: List<WishListProduct?>, productList: List<ProductItem>): Double {
-    return wishlist.sumOf { item ->
-        val product = productList.find { it.id == item?.productId }
-        item?.quantity?.let { product?.price?.times(it) } ?: 0.0
-    }
-}
-
-fun Double.roundTo(decimals: Int): Double {
-    var multiplier = 1.0
-    repeat(decimals) { multiplier *= 10 }
-    return round(this * multiplier) / multiplier
-}
 

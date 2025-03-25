@@ -26,7 +26,7 @@ class UserRepository {
                         firstName = document.getString("firstName") ?: "",
                         lastName = document.getString("lastName") ?: "",
                         address = document.getString("address") ?: "",
-                        wishList = document.getString("wishlist") ?: "",
+                        wishlist = document.getString("wishlist") ?: "",
                         orders = document.get("orders") as? List<String>
                             ?: emptyList()
                     )
@@ -60,5 +60,23 @@ class UserRepository {
             .addOnFailureListener { error ->
                 onError(error)
             }
+    }
+
+    fun updateUserAddress(
+        uid: String,
+        newAddress: String,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit,
+    ) {
+        if (uid.isEmpty()) {
+            onError(Exception("UID is empty"))
+            return
+        }
+        val userDocRef = firestore.collection("users").document(uid)
+        userDocRef.update("address", newAddress).addOnSuccessListener {
+            onSuccess()
+        }.addOnFailureListener() { error ->
+            onError(error)
+        }
     }
 }
